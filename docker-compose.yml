@@ -1,0 +1,61 @@
+services:
+  app:
+    build:
+      context: ./employee-management-tool
+      dockerfile: Dockerfile
+    container_name: 'employee-management-tool'
+    ports:
+      - '8071:8071'
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/employee_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - db
+    networks:
+      - common-net
+
+  ui:
+    build:
+      context: ./employee-management-tool-ui
+      dockerfile: Dockerfile
+    container_name: 'employee-management-ui'
+    ports:
+      - '4200:80'
+    networks:
+      - common-net
+
+  db:
+    image: postgres:15
+    container_name: 'postgres-db'
+    environment:
+      POSTGRES_DB: employee_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - common-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: 'pgadmin'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: rinkulsharma123@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5050:80'
+    depends_on:
+      - db
+    networks:
+      - common-net
+
+networks:
+  common-net:
+    name: common-net
+
+volumes:
+  postgres_data:

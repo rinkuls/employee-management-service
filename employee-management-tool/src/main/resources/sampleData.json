@@ -1,0 +1,50 @@
+{
+  "name": "testuser",
+  "empId": 12048,
+  "email": "john.doe@example.com",
+  "phoneNumber": "+1234567890",
+  "address": "1234 Elm St, Springfield, IL",
+  "married": true,
+  "extraMartialAffair": false,
+  "dreamWish": "To travel the world",
+  "natureBehavior": "Calm and friendly",
+  "profilePicture": null,
+  "kids": [
+    {
+      "name": "Alice Doe",
+      "age": 5,
+      "gender": "Female",
+      "profession": "Student"
+    },
+    {
+      "name": "Bob Doe",
+      "age": 3,
+      "gender": "Male",
+      "profession": "Student"
+    }
+  ],
+  "spouse": {
+    "name": "Jane Doe",
+    "age": 30,
+    "gender": "Female",
+    "currentOccupation": "Doctor"
+  },
+  "professionalDetails": {
+    "currentCompany": "TechCorp Inc.",
+    "currentDesignation": "Senior Developer",
+    "currentSalary": 95000.00,
+    "currentLocation": "New York"
+  },
+  "pastEmployments": [
+    {
+      "companyName": "OldTech Solutions",
+      "designation": "Junior Developer",
+      "salary": 55000.00
+    },
+    {
+      "companyName": "Creative Works",
+      "designation": "Intern",
+      "salary": 30000.00
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f3f3f3;
+}
+
+.welcome-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: #388e3c;
+  /* Green color for the welcome message */
+  animation: moveWelcomeMessage 5s linear infinite;
+}
+
+@keyframes moveWelcomeMessage {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.logout button {
+  background-color: #f44336;
+  /* Red logout button */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.logout button:hover {
+  background-color: #d32f2f;
+  /* Darker red on hover */
+}
+
+/* Admin/User Panel Section */
+.features-heading {
+  text-align: center;
+  font-size: 22px;
+  color: #388e3c;
+  /* Green for feature heading */
+  margin-bottom: 20px;
+}
+
+/* Button Strip */
+.button-strip {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  background-color: #e8f5e9;
+  /* Light green strip */
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.green-button {
+  background-color: #388e3c;
+  /* Dark green button */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.green-button:hover {
+  background-color: #2c6d2f;
+  /* Darker green on hover */
+}
+
+/* Unauthorized Role */
+p {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Loading state */
+ng-template {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Add User Form */
+.add-user-form {
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  /* Light background */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  max-width: 400px;
+}
+
+.add-user-form h3 {
+  text-align: center;
+  color: #388e3c;
+  /* Green heading */
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input:focus,
+select:focus {
+  border-color: #388e3c;
+  /* Green border on focus */
+  outline: none;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Submit Button */
+.submit-button {
+  background-color: #388e3c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.submit-button:hover {
+  background-color: #2c6d2f;
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Success Message */
+.success-message {
+  margin-top: 20px;
+  padding: 10px;
+  color: #fff;
+  background-color: #4caf50;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon {
+  font-size: 1.5em;
+  margin-right: 10px;
+}
+
+/* Add new styles below existing ones */
+
+/* Employee Details Section */
+.employee-details-section {
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.employee-details-section h3 {
+  color: #388e3c; /* Green heading */
+  margin-bottom: 20px;
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 10px;
+  color: #fff;
+  background-color: #f44336;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-icon {
+  font-size: 1.5em;
+  margin-right: 10px;
+}

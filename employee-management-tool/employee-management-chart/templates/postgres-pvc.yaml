@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-postgresql-pvc
+  annotations:
+    "helm.sh/resource-policy": keep  # Prevent Helm from deleting PVC on uninstall
+spec:
+  storageClassName: local-path  # Use Rancher's default dynamic provisioner
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

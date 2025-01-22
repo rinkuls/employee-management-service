@@ -1,0 +1,123 @@
+<div class="header">
+  <div class="welcome-message">
+    <h1>Welcome, {{ name }}!</h1>
+  </div>
+  <div class="logout">
+    <button (click)="logout()">Logout</button>
+  </div>
+</div>
+
+<div *ngIf="role && name; else loading">
+  <div *ngIf="role === 'ADMIN'">
+    <h2 class="features-heading">Available Features</h2>
+    <div class="button-strip">
+      <button class="green-button" (click)="showEmployeeSearchForm()">Fetch Employee Details</button>
+      <button class="green-button" (click)="showAddUserForm()">Add New User</button>
+    </div>
+  </div>
+
+  <div *ngIf="role === 'USER'">
+    <h2 class="features-heading">Available Features</h2>
+    <div class="button-strip">
+      <button class="green-button" (click)="showEmployeeSearchForm()">Fetch Employee Details</button>
+    </div>
+  </div>
+
+  <!-- Employee Search Form -->
+  <div *ngIf="showEmployeeSearch" class="employee-search-form">
+    <h3>Fetch Employee Details</h3>
+    <form (ngSubmit)="fetchEmployeeDetails()" #employeeForm="ngForm">
+      <div class="form-group">
+        <label for="employeeName">Employee Name</label>
+        <input
+          type="text"
+          id="employeeName"
+          name="employeeName"
+          [(ngModel)]="employeeName"
+          required
+          pattern="^[A-Za-z ]+$"
+          #employeeNameInput="ngModel"
+        />
+        <div *ngIf="employeeNameInput.invalid && employeeNameInput.touched" class="error">
+          Employee name must contain only letters and spaces.
+        </div>
+      </div>
+      <button type="submit" class="submit-button" [disabled]="employeeForm.invalid">Submit</button>
+    </form>
+  </div>
+
+  <!-- Success and Error Messages for Employee Search -->
+  <div *ngIf="fetchSuccessMessage" class="success-message">
+    <span class="success-icon">✔</span> Employee found in database. PDF is downloading!
+  </div>
+  <div *ngIf="fetchErrorMessage" class="error-message">
+    <span class="error-icon">✖</span> I'm sorry, employee not found. Please try again later.
+  </div>
+
+  <!-- Add User Form -->
+  <div *ngIf="showForm" class="add-user-form">
+    <h3>Add New User</h3>
+    <form (ngSubmit)="onSubmit()" #userForm="ngForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="user.username"
+          required
+          pattern="^[A-Za-z]+$"
+          #username="ngModel"
+        />
+        <div *ngIf="username.invalid && username.touched" class="error">
+          Username must be alphabets only.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="empId">Employee ID</label>
+        <input
+          type="number"
+          id="empId"
+          name="empId"
+          [(ngModel)]="user.empId"
+          required
+          min="1"
+          #empId="ngModel"
+        />
+        <div *ngIf="empId.invalid && empId.touched" class="error">
+          Employee ID must be a valid number.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" name="role" [(ngModel)]="user.role" required #role="ngModel">
+          <option value="ADMIN">Admin</option>
+          <option value="USER">User</option>
+        </select>
+        <div *ngIf="role.invalid && role.touched" class="error">
+          Please select a valid role.
+        </div>
+      </div>
+
+      <button type="submit" class="submit-button" [disabled]="userForm.invalid">Submit</button>
+    </form>
+  </div>
+
+  <!-- Success and Error Messages for User Registration -->
+  <div *ngIf="submitSuccessMessage" class="success-message">
+    <span class="success-icon">✔</span> User registered successfully!
+  </div>
+  <div *ngIf="submitErrorMessage" class="error-message">
+    <span class="error-icon">✖</span> Failed to register user. Please try again.
+  </div>
+</div>
+
+<div *ngIf="role !== 'ADMIN' && role !== 'USER'">
+  <p>Unauthorized role</p>
+</div>
+
+<ng-template #loading>
+  <p>Loading...</p>
+</ng-template>

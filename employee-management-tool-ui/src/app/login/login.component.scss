@@ -1,0 +1,163 @@
+/* General Styles */
+html, body {
+  background-color: #ffd700; /* Dark yellow background */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Login Container */
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Main Heading */
+.main-heading {
+  font-size: 36px;
+  color: #4caf50;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Logo Styles (Updated to top-right corner) */
+.logo {
+  position: absolute;
+  top: 80px; /* Adjust top space */
+  right: 20px; /* Position logo on the right */
+  z-index: 2; /* Ensure logo is always above other elements */
+}
+
+.circle {
+  width: 80px;
+  height: 80px;
+  background: #4caf50;
+  color: white;
+  font-size: 15px;
+  border-radius: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.circle marquee {
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  display: inline-block;
+  animation: marquee-animation 10s linear infinite;
+}
+
+/* Form Styles */
+.form-group {
+  margin: 15px 0;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Login Button */
+.login-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.login-button:hover {
+  background-color: #388e3c;
+}
+
+/* Footer Text */
+.footer-text {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  color: #ff5722;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  z-index: 1;
+}
+
+.footer-marquee {
+  font-weight: bold;
+  color: red;
+}
+
+/* New Launch Background Text */
+.background-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+/* Info Text */
+.info-text marquee {
+  font-size: 16px;
+  color: red; /* Change the text color to red */
+  font-weight: bold;
+}
+
+.stars {
+  color: red; /* Make the stars red as well */
+  font-size: 20px; /* Increase size of stars */
+  margin: 0 10px;
+}
+
+strong {
+  color: red; /* Make the strong part (email) red */
+}
+
+.new-launch-text {
+  font-size: 60px;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  animation: slideDown 5s infinite;
+}
+
+@keyframes slideDown {
+  0% {
+    top: 0;
+    opacity: 0.3;
+  }
+  50% {
+    top: 50%;
+    opacity: 0.6;
+  }
+  100% {
+    top: 100%;
+    opacity: 0.3;
+  }
+}

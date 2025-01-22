@@ -1,0 +1,107 @@
+node {
+    def WORKSPACE = "/var/lib/jenkins/workspace/employee-management-tool"
+    def buildNumber = env.BUILD_NUMBER ?: '0'  // Jenkins build number
+    def dockerImageTag = "rinkuls/employee-management-tool:${buildNumber}"
+    def helmChartName = "employee-management-chart"
+    def releaseName = "release"
+
+
+
+    try {
+        // Stage 1: Clone Repository
+        stage('Clone Repository') {
+            git url: 'https://github.com/rinkuls/employee-management-tool.git',
+                credentialsId: 'springdeploy-user',
+                branch: 'main'
+        }
+
+        // Stage 2: Build Application
+        stage('Build Application') {
+            echo "Building the employee-management-tool Java Application with Maven"
+            bat "mvn clean install"
+        }
+
+        // Stage 3: Build Docker Image
+        stage('Build Docker Image') {
+            echo "Building Docker image: ${dockerImageTag}"
+            def dockerImage = docker.build(dockerImageTag)
+            echo "Docker Image built successfully: ${dockerImageTag}"
+        }
+
+        // Stage 4: Push Docker Image to Docker Hub
+       // Push Docker Image to Docker Hub
+              stage('Push Docker Image to Docker Hub') {
+                  withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                      // Log in to Docker Hub
+                      bat '''
+                          docker login -u %DOCKER_HUB_USERNAME% -p %DOCKER_HUB_PASSWORD% || exit 255
+                      '''
+
+                      // Push Docker image to Docker Hub
+                      bat "docker push ${dockerImageTag} || exit 255"
+                  }
+              }
+
+        // Deploy to Kubernetes (Rancher-desktop) using Helm
+        stage('Deploy to Rancher-Desktop with Helm') {
+          echo "Deploying to Minikube using Helm with image: ${dockerImageTag}"
+          bat 'kubectl config use-context rancher-desktop'
+
+            // Update Helm chart with new Docker image tag
+             bat "helm upgrade --install ${releaseName} ${helmChartName} --set image.tag=${buildNumber} --namespace hr-tool || exit 255"
+
+
+
+            // Verify Helm release status
+            bat "helm status ${releaseName}  --namespace hr-tool || exit 255"
+
+            // Optionally, check pod status after the deployment
+            bat 'kubectl get pods --namespace hr-tool  || exit 255'
+
+
+        }
+    //notifyBuild('SUCCESSFUL')
+
+
+    } catch (Exception e) {
+        echo "Error occurred: ${e.message}"
+        currentBuild.result = 'FAILED'
+        notifyBuild('FAILED')
+        throw e
+    } finally {
+        echo "Cleaning up resources"
+    }
+}
+
+// Email notification function
+def notifyBuild(String buildStatus = 'STARTED') {
+    buildStatus = buildStatus ?: 'SUCCESSFUL'
+    def now = new Date()
+    def subject_email = "[${buildStatus}] Employee-Management-Tool Deployment #${env.BUILD_NUMBER}"
+    def details = """
+    <html>
+    <body>
+        <h2>Food-Drug-Service Deployment Notification</h2>
+        <p>Hello,</p>
+        <p>The deployment process for the Employee-Management-Tool application has completed with the following status:</p>
+        <ul>
+            <li><strong>Status:</strong> ${buildStatus}</li>
+            <li><strong>Job:</strong> ${env.JOB_NAME}</li>
+            <li><strong>Build Number:</strong> ${env.BUILD_NUMBER}</li>
+            <li><strong>Time:</strong> ${now}</li>
+        </ul>
+        <p>You can check the detailed console output <a href="${env.BUILD_URL}">here</a>.</p>
+        <p>Best Regards,<br>Rinkul Sharma,<br>Head of Jenkins Deployment Team(Europe Continent)</p>
+    </body>
+    </html>
+    """
+
+    // Email notification
+    emailext(
+        to: "rinkulsharma123@gmail.com",
+        from: "hrcore.europe@gmail.com", // Replace with your desired sender email
+        subject: subject_email,
+        body: details,
+        mimeType: 'text/html' // Ensures email is sent in HTML format
+    )
+}

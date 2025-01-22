@@ -1,0 +1,85 @@
+# Default values for employee-management-chart.
+
+replicaCount: 1
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: rinkuls/employee-management-tool
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+# Application Service
+service:
+  type: NodePort
+  port: 8071
+
+# Ingress configuration (disabled by default)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# PostgreSQL Configuration
+postgresql:
+  enabled: true
+  image: postgres:15
+  auth:
+    database: employee_db
+    username: postgres
+    password: postgres
+  persistence:
+    enabled: true
+    size: 5Gi
+    existingClaim: "{{ .Release.Name }}-postgresql-pvc"  # Link the PVC to the PV
+  service:
+    port: 5432
+
+# pgAdmin Configuration
+pgadmin:
+  enabled: true
+  image: dpage/pgadmin4
+  port: 5050
+  email: rinkulsharma123@gmail.com
+  password: admin
+  nodePort: 30050
+  persistence:
+    enabled: true
+    size: 1Gi
+    mountPath: /var/lib/pgadmin  # pg
