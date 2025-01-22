@@ -1,23 +1,20 @@
 # Stage 1: Build the Angular app
 FROM node:18 AS build
-
 WORKDIR /app
 
-# Install dependencies
-COPY ./package*.json ./
+# Copy package files and install dependencies
+COPY package*.json ./
 RUN npm install
 
-# Copy source code and build the Angular app
-COPY ./ ./
-RUN npm run build -- --output-path=dist --configuration=production
+# Copy only the Angular source code and build the app
+COPY src ./src
+COPY angular.json ./
+COPY tsconfig*.json ./
+RUN npm run build -- --configuration=production
 
-# Stage 2: Serve the app with Nginx
+# Stage 2: Serve the app with NGINX
 FROM nginx:stable
-
-# Copy built files to Nginx web directory
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Custom Nginx configuration (optional)
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist/employee-management-tool-ui /usr/share/nginx/html
+COPY default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
