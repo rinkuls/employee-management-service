@@ -1,7 +1,8 @@
 package com.employee.management.service;
 
-import com.employee.management.dto.UserDetails;
+import com.employee.management.dto.EmployeeDetailsDTO;
 import com.employee.management.model.Employee;
+import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeService {
@@ -18,7 +19,8 @@ public interface EmployeeService {
    */
   Optional<Employee> findByName(String name);
 
-  UserDetails FetchDetailsOfUser(String token);
 
-  void saveUserDetails(UserDetails userDetails);
+  List<EmployeeDetailsDTO> getAllEmployees();
+
+
 }

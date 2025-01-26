@@ -29,13 +29,13 @@ public class SecurityConfig {
         // Configure authorization rules
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"),
-        AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
-        AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
-        AntPathRequestMatcher.antMatcher("/swagger-ui.html"),
-        AntPathRequestMatcher.antMatcher("/swagger-resources/**"),
-        AntPathRequestMatcher.antMatcher("/webjars/**"))
-        .permitAll()
-        .anyRequest().authenticated()
+                AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
+                AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
+                AntPathRequestMatcher.antMatcher("/swagger-ui.html"),
+                AntPathRequestMatcher.antMatcher("/swagger-resources/**"),
+                AntPathRequestMatcher.antMatcher("/webjars/**"))
+            .permitAll()
+            .anyRequest().authenticated()
         )
         .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class);
 

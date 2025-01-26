@@ -57,8 +57,8 @@ public class JwtValidator {
     this.secretUrl = secretUrl;
     this.jwtExpirationInMs = jwtExpirationInMs;
     this.secretKey = "test";
-   // this.secretKey = fetchSecretKeyFromGitHub()
-     //   .orElseThrow(() -> new SecretKeyException(SECRET_KEY_NOT_FETCHED));
+    // this.secretKey = fetchSecretKeyFromGitHub()
+    //   .orElseThrow(() -> new SecretKeyException(SECRET_KEY_NOT_FETCHED));
   }
 
   public JwtValidationResult getJwtValidationResult(String token) {

@@ -12,7 +12,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,24 +33,25 @@ public class EmployeePdfExportController {
       summary = "Generate PDF from Freemarker template",
       security = {@SecurityRequirement(name = "bearerAuth")}
   )
-  @GetMapping("/{name}")
+  @GetMapping("/{empId}")
   @Transactional
   public ResponseEntity<byte[]> generatePdf(
-      @PathVariable String name
+      @PathVariable Long empId
 
   ) {
-    var validatedName = Optional.ofNullable(name)
-        .filter(StringUtils::hasText)
-        .orElseThrow(() -> new InvalidEmployeeDataException("Employee data is missing."));
+    var validatedEmpId = Optional.ofNullable(empId)
+        .filter(id -> id > 0 && id < 100000)
+        .orElseThrow(() -> new InvalidEmployeeDataException(
+            "Employee Id is not in proper format or its null."));
 
-    return generatePdfResponse(validatedName);
+    return generatePdfResponse(validatedEmpId);
 
 
   }
 
-  private ResponseEntity<byte[]> generatePdfResponse(String name) {
+  private ResponseEntity<byte[]> generatePdfResponse(Long empId) {
     try {
-      var pdfBytes = pdfGenerationService.generatePdfFromHtml(name).toByteArray();
+      var pdfBytes = pdfGenerationService.generatePdfFromHtml(empId).toByteArray();
 
       // Build headers and create response
       var headers = new HttpHeaders();
@@ -64,7 +64,7 @@ public class EmployeePdfExportController {
 
     } catch (DocumentException ex) {
 
-      throw new RuntimeException("Failed to generate PDF for employee: " + name, ex);
+      throw new RuntimeException("Failed to generate PDF for employee: " + empId, ex);
     }
   }
 }

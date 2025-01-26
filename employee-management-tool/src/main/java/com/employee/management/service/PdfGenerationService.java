@@ -5,5 +5,5 @@ import java.io.ByteArrayOutputStream;
 
 public interface PdfGenerationService {
 
-  ByteArrayOutputStream generatePdfFromHtml(String name) throws DocumentException;
+  ByteArrayOutputStream generatePdfFromHtml(Long EmpId) throws DocumentException;
 }

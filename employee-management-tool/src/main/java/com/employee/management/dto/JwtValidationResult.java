@@ -3,7 +3,6 @@ package com.employee.management.dto;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 @AllArgsConstructor
 @Data

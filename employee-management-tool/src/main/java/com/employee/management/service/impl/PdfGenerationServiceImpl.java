@@ -23,16 +23,16 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
 
   @Override
   @Transactional
-  public ByteArrayOutputStream generatePdfFromHtml(String name) {
+  public ByteArrayOutputStream generatePdfFromHtml(Long empId) {
 
-    return employeeRepo.findByName(name).map(employee -> {
+    return employeeRepo.findByEmpId(empId).map(employee -> {
           var data = Map.of("employee", employee);
           var htmlContent = htmlContentService.generateHtml("employee", data);
           return createPdfFromHtml(htmlContent);
         })
 
         .orElseThrow(
-            () -> new EmployeeNotFoundException("Employee with name '" + name + "' not found"));
+            () -> new EmployeeNotFoundException("Employee with name '" + empId + "' not found"));
 
 
   }

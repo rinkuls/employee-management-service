@@ -6,9 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
-import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,18 +19,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PastEmployment {
+public class EmployeeLeave {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "past_employment_seq")
-  @SequenceGenerator(name = "past_employment_seq", sequenceName = "past_employment_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_leave_seq")
+  @SequenceGenerator(name = "employee_leave_seq", sequenceName = "employee_leave_seq", allocationSize = 1)
   private Long id;
 
-  private String companyName;
-  private String designation;
-  private BigDecimal salary;
+  private Integer totalLeaveGrantedForYear;
+  private Integer leaveConsumedForYear;
+  private Integer leaveBalancedForYear;
+  private Integer financialYear;
+  private Integer leaveCarryForwardForYear;
+  private Integer allowedLeaveForForwarding;
 
-  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "employee_id")
   private Employee employee;
 

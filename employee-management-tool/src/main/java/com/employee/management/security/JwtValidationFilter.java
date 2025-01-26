@@ -74,11 +74,11 @@ public class JwtValidationFilter extends OncePerRequestFilter {
         return;
       }
     }
-try {
-  filterChain.doFilter(request, response);
-} catch (Exception e) {
-  throw new RuntimeException(e);
-}
+    try {
+      filterChain.doFilter(request, response);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
 
   }
 

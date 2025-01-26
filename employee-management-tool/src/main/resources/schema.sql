@@ -73,3 +73,47 @@ CREATE TABLE IF NOT EXISTS users (
     role VARCHAR(255),
     emp_id BIGINT
 );
+
+CREATE SEQUENCE IF NOT EXISTS employee_leave_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE IF NOT EXISTS employee_leave (
+    id BIGINT PRIMARY KEY,
+    total_leave_granted_for_year INT,
+    leave_consumed_for_year INT,
+    leave_balanced_for_year INT,
+    financial_year INT,
+    leave_carry_forward_for_year INT,
+    allowed_leave_for_forwarding INT,
+    employee_id BIGINT,
+    FOREIGN KEY (employee_id) REFERENCES employee(id)
+);
+CREATE SEQUENCE IF NOT EXISTS salary_structure_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE SalaryStructure (
+    id BIGINT PRIMARY KEY ,
+    employee_id BIGINT NOT NULL,
+    basic_salary DECIMAL(10, 2) NOT NULL,
+    hra DECIMAL(10, 2),
+    allowances DECIMAL(10, 2),
+    deductions DECIMAL(10, 2),
+    total_salary DECIMAL(10, 2) ,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (employee_id) REFERENCES employee(id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS salary_release_seq START WITH 1 INCREMENT BY 1;
+CREATE TABLE SalaryRelease (
+    id BIGINT PRIMARY KEY ,
+    employee_id BIGINT NOT NULL,
+    salary_structure_id BIGINT NOT NULL,
+    salary_month VARCHAR(7) NOT NULL, -- For tracking monthly salary releases
+    amount_released DECIMAL(10, 2),
+    release_status VARCHAR(10),
+    release_date TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (employee_id) REFERENCES employee(id),
+    FOREIGN KEY (salary_structure_id) REFERENCES SalaryStructure(id)
+);
+

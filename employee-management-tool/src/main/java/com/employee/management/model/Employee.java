@@ -12,15 +12,15 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Employee {
 
   @Id
@@ -46,12 +46,20 @@ public class Employee {
   @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
   private Spouse spouse;
 
+  @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+  private List<EmployeeLeave> employeeLeave;
 
   @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
   private ProfessionalDetails professionalDetails;
 
   @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<PastEmployment> pastEmployments;
+
+  @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+  private SalaryStructure salaryStructure;
+
+  @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SalaryRelease> salaryReleases;
 
 
 }

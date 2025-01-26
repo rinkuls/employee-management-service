@@ -7,7 +7,7 @@ WORKDIR /app
 COPY target/employee-management-tool-0.0.1-SNAPSHOT.jar app.jar
 
 # Copy the .env file (only for Docker)
-#COPY gitHubToken.env /app/gitHubToken.env
+COPY gitHubToken.env /app/gitHubToken.env
 
 # Set the application to use Docker profile
 ENV SPRING_PROFILES_ACTIVE docker

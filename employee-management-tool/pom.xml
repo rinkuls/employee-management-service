@@ -40,10 +40,39 @@
             <version>9.1.22</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
+        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>6.0.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+            <version>5.8.0</version> <!-- Use the latest version available -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+            <version>5.8.0</version> <!-- Use the latest version available -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
+            <version>5.8.0</version> <!-- Use the latest version available -->
         </dependency>
         <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -127,7 +156,27 @@
             <version>4.0.1</version> <!-- Use the appropriate version for your environment -->
             <scope>provided</scope>
         </dependency>
+        <!-- MapStruct Core -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.5.Final</version> <!-- Use the latest version -->
+        </dependency>
 
+        <!-- MapStruct Processor (for generating code) -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.5.5.Final</version>
+            <scope>provided</scope> <!-- Scope 'provided' ensures it's only used at compile-time -->
+        </dependency>
+
+        <!-- Annotation Processor (to enable MapStruct during build) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional> <!-- Optional for better build performance -->
+        </dependency>
 
     </dependencies>
 

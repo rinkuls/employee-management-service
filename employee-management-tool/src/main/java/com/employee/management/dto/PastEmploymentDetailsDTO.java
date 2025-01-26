@@ -1,21 +1,18 @@
 package com.employee.management.dto;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDetails {
+public class PastEmploymentDetailsDTO {
 
-  @NonNull
-  private String role;
-  @NonNull
-  private Integer empId;
-  @NonNull
-  private String name;
+  private String companyName;
+  private String designation;
+  private BigDecimal salary;
 }
