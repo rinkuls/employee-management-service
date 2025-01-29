@@ -28,15 +28,18 @@ public class SystemUserController {
   @PostMapping("/fetchRole")
   public ResponseEntity<UserDetails> fetchUserRole(
       @RequestHeader("Authorization") String authHeader) {
+    logger.info("Received request to fetch user role.");
+
     try {
       if (authHeader != null && authHeader.startsWith("Bearer ")) {
         String token = authHeader.substring(7);
-        logger.info("got Token and now validating it");
+        logger.info("Token extracted successfully: {}", token);
         return ResponseEntity.ok(userService.FetchDetailsOfUser(token));
       }
-
+      logger.warn("Authorization header is missing or invalid.");
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     } catch (Exception e) {
+      logger.error("Error fetching user role: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
   }
@@ -44,17 +47,24 @@ public class SystemUserController {
   @PostMapping("/addUserDetails")
   public ResponseEntity<String> addUserDetails(
       @Valid @RequestBody UserDetails userDetails) {
+    logger.info("Received request to add user details.");
 
-    Optional.ofNullable(userDetails.getName())
-        .filter(StringUtils::hasText)
-        .orElseThrow(() -> new InvalidEmployeeDataException("User name data is missing."));
-    logger.info("got details and now saving it");
-    userService.saveUserDetails(userDetails);
+    try {
+      Optional.ofNullable(userDetails.getName())
+          .filter(StringUtils::hasText)
+          .orElseThrow(() -> {
+            logger.error("Validation failed: User name is missing.");
+            return new InvalidEmployeeDataException("User name data is missing.");
+          });
 
-    return ResponseEntity.ok("User added successfully");
+      logger.info("User details validated successfully. Saving to database...");
+      userService.saveUserDetails(userDetails);
 
-
+      logger.info("User details saved successfully.");
+      return ResponseEntity.ok("User added successfully");
+    } catch (Exception e) {
+      logger.error("Error adding user details: {}", e.getMessage(), e);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add user");
+    }
   }
-
-
 }

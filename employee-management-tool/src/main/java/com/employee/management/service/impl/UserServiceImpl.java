@@ -15,6 +15,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 //@RequiredArgsConstructor  need to check on this
 public class UserServiceImpl implements UserService {
 
+  private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
   private static final String ENV_FILE = "gitHubToken.env";
   private static final String ENV_DIRECTORY = System.getProperty("user.dir");
   private static final String GITHUB_TOKEN_KEY = "GITHUB_TOKEN";
@@ -41,39 +44,63 @@ public class UserServiceImpl implements UserService {
     this.usersRepo = usersRepo;
     this.secretUrl = secretUrl;
 
+    logger.info("Fetching secret key from GitHub...");
     this.secretKey = fetchSecretKeyFromGitHub()
-        .orElseThrow(() -> new SecretKeyException(SECRET_KEY_NOT_FETCHED));
+        .orElseThrow(() -> {
+          logger.error("Failed to fetch secret key from GitHub.");
+          return new SecretKeyException("Secret key could not be fetched from GitHub");
+        });
+
+    logger.info("Secret key fetched successfully.");
   }
 
   @Override
   public UserDetails FetchDetailsOfUser(String token) {
-    // Validate and parse the token
-    var signingKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
+    logger.info("Validating and parsing token: {}", token);
 
-    var jwsClaims = Jwts.parserBuilder()
-        .setSigningKey(signingKey)
-        .build()
-        .parseClaimsJws(token);
+    try {
+      var signingKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
+      var jwsClaims = Jwts.parserBuilder()
+          .setSigningKey(signingKey)
+          .build()
+          .parseClaimsJws(token);
 
-    var claims = jwsClaims.getBody();
+      var claims = jwsClaims.getBody();
 
-    // Extract details
-    String role = claims.get("role", String.class); // Assuming "role" is stored in the token
-    Integer empId = claims.get("empId", Integer.class); // Assuming "empId" is stored in the token
-    String name = claims.getSubject(); // Assuming username is stored as the subject
+      String role = claims.get("role", String.class);
+      Integer empId = claims.get("empId", Integer.class);
+      String name = claims.getSubject();
 
-    return new UserDetails(role, empId, name);
+      logger.info("Token parsed successfully. Role: {}, EmpId: {}, Name: {}", role, empId, name);
+      return new UserDetails(role, empId, name);
+    } catch (Exception e) {
+      logger.error("Error validating token: {}", e.getMessage(), e);
+      throw new RuntimeException("Invalid token");
+    }
   }
 
   @Override
   public Optional<Users> saveUserDetails(UserDetails userDetails) {
-    var userDetail = Users.builder().userName(userDetails.getName()).empId(
-        Long.valueOf(userDetails.getEmpId())).role(userDetails.getRole()).build();
+    logger.info("Saving user details to the database: {}", userDetails);
 
-    return Optional.of(usersRepo.save(userDetail));
+    try {
+      var userDetail = Users.builder()
+          .userName(userDetails.getName())
+          .empId(Long.valueOf(userDetails.getEmpId()))
+          .role(userDetails.getRole())
+          .build();
+
+      Users savedUser = usersRepo.save(userDetail);
+      logger.info("User details saved successfully. ID: {}", savedUser.getId());
+      return Optional.of(savedUser);
+    } catch (Exception e) {
+      logger.error("Error saving user details: {}", e.getMessage(), e);
+      throw e;
+    }
   }
 
   private Optional<String> fetchSecretKeyFromGitHub() {
+    logger.info("Fetching secret key from GitHub...");
     try {
       Dotenv dotenv = Dotenv.configure()
           .directory(ENV_DIRECTORY)
@@ -83,6 +110,7 @@ public class UserServiceImpl implements UserService {
       String githubToken = dotenv.get(GITHUB_TOKEN_KEY);
 
       if (githubToken == null || githubToken.isBlank()) {
+        logger.error("GitHub token not found in .env file.");
         throw new SecretKeyException(GITHUB_TOKEN_NOT_FOUND);
       }
 
@@ -94,12 +122,17 @@ public class UserServiceImpl implements UserService {
       if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
         try (var reader = new BufferedReader(
             new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
-          return Optional.ofNullable(reader.readLine());
+          String secret = reader.readLine();
+          logger.info("Secret key fetched successfully.");
+          return Optional.ofNullable(secret);
         }
       } else {
+        logger.error("Failed to fetch secret key from GitHub. HTTP Code: {}",
+            conn.getResponseCode());
         throw new SecretKeyException(ERROR_FETCHING_SECRET + ": HTTP " + conn.getResponseCode());
       }
     } catch (Exception e) {
+      logger.error("Error fetching secret key from GitHub: {}", e.getMessage(), e);
       throw new SecretKeyException(ERROR_FETCHING_SECRET, e);
     }
   }

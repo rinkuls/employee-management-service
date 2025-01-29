@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS employee_leave (
 );
 CREATE SEQUENCE IF NOT EXISTS salary_structure_seq START WITH 1 INCREMENT BY 1;
 
-CREATE TABLE SalaryStructure (
+CREATE TABLE IF NOT EXISTS SalaryStructure (
     id BIGINT PRIMARY KEY ,
     employee_id BIGINT NOT NULL,
     basic_salary DECIMAL(10, 2) NOT NULL,
@@ -98,12 +98,12 @@ CREATE TABLE SalaryStructure (
     deductions DECIMAL(10, 2),
     total_salary DECIMAL(10, 2) ,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (employee_id) REFERENCES employee(id)
 );
 
 CREATE SEQUENCE IF NOT EXISTS salary_release_seq START WITH 1 INCREMENT BY 1;
-CREATE TABLE SalaryRelease (
+CREATE TABLE IF NOT EXISTS SalaryRelease (
     id BIGINT PRIMARY KEY ,
     employee_id BIGINT NOT NULL,
     salary_structure_id BIGINT NOT NULL,
@@ -112,8 +112,23 @@ CREATE TABLE SalaryRelease (
     release_status VARCHAR(10),
     release_date TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (employee_id) REFERENCES employee(id),
     FOREIGN KEY (salary_structure_id) REFERENCES SalaryStructure(id)
 );
 
+
+
+-- Add a trigger for auto-updating updated_at column
+--CREATE OR REPLACE FUNCTION update_timestamp()
+--RETURNS TRIGGER AS $$
+--BEGIN
+  --  NEW.updated_at = CURRENT_TIMESTAMP;
+    --RETURN NEW;
+--END;
+--$$ LANGUAGE plpgsql;
+
+--CREATE TRIGGER update_salary_structure_timestamp
+--BEFORE UPDATE ON SalaryStructure
+--FOR EACH ROW
+--EXECUTE FUNCTION update_timestamp();
