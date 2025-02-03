@@ -1,229 +1,230 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>employee-management-tool</artifactId>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>spring-boot-maven-plugin</artifactId>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-    <groupId>com.employee.management</groupId>
-    <artifactId>employee-management-tool</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>Employee-management-tool</name>
-    <description>project for Employee-management-tool</description>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>analyze</goal>
+            </goals>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.1.1</version>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+
+    <!-- Add necessary Spring Security dependencies -->
+    <dependency>
+      <artifactId>spring-security-oauth2-jose</artifactId>
+      <groupId>org.springframework.security</groupId>
+
+    </dependency>
+    <dependency>
+      <artifactId>spring-security-oauth2-client</artifactId>
+      <groupId>org.springframework.security</groupId>
+
+    </dependency>
+    <dependency>
+      <artifactId>spring-security-config</artifactId>
+      <groupId>org.springframework.security</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-security-web</artifactId>
+      <groupId>org.springframework.security</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-security-oauth2-resource-server</artifactId>
+      <groupId>org.springframework.security</groupId>
+
+    </dependency>
+
+    <dependency>
+      <artifactId>flying-saucer-pdf</artifactId>
+      <groupId>org.xhtmlrenderer</groupId>
+      <version>9.1.22</version>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-data-rest</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <groupId>jakarta.persistence</groupId>
+      <version>3.1.0</version> <!-- or any compatible version -->
+    </dependency>
+    <dependency>
+      <artifactId>javax.mail</artifactId>
+      <groupId>com.sun.mail</groupId>
+      <version>1.6.2</version>
+    </dependency>
+
+
+    <!-- Hibernate as JPA provider (you can use other JPA providers like EclipseLink or OpenJPA) -->
+
+    <dependency>
+      <artifactId>h2</artifactId>
+      <groupId>com.h2database</groupId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <artifactId>postgresql</artifactId>
+      <groupId>org.postgresql</groupId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-freemarker</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>dotenv-java</artifactId>
+      <groupId>io.github.cdimascio</groupId>
+      <version>3.0.0</version>
+    </dependency>
+    <dependency>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <groupId>org.springdoc</groupId>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <artifactId>lombok</artifactId>
+      <groupId>org.projectlombok</groupId>
+      <scope>compile</scope>
+      <version>1.18.22</version>
+    </dependency>
+    <dependency>
+      <artifactId>jjwt-api</artifactId>
+      <groupId>io.jsonwebtoken</groupId>
+      <version>0.11.5</version>
+    </dependency>
+    <dependency>
+      <artifactId>jjwt-impl</artifactId>
+      <groupId>io.jsonwebtoken</groupId>
+      <scope>runtime</scope>
+      <version>0.11.5</version>
+    </dependency>
+    <dependency>
+      <artifactId>jjwt-jackson</artifactId>
+      <groupId>io.jsonwebtoken</groupId>
+      <scope>runtime</scope>
+      <version>0.11.5</version>
+    </dependency>
+    <dependency>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <version>6.0.0</version>  <!-- Use the latest compatible version -->
+    </dependency>
+
+    <!-- MapStruct Core -->
+    <dependency>
+      <artifactId>mapstruct</artifactId>
+      <groupId>org.mapstruct</groupId>
+      <version>1.5.5.Final</version> <!-- Use the latest version -->
+    </dependency>
+
+    <!-- MapStruct Processor (for generating code) -->
+    <dependency>
+      <artifactId>mapstruct-processor</artifactId>
+      <groupId>org.mapstruct</groupId>
+      <scope>provided</scope>
+      <version>1.5.5.Final</version> <!-- Scope 'provided' ensures it's only used at compile-time -->
+    </dependency>
+
+    <!-- Annotation Processor (to enable MapStruct during build) -->
+    <dependency>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <optional>true</optional> <!-- Optional for better build performance -->
+    </dependency>
+    <!-- Spring Boot Starter for Elasticsearch -->
+    <dependency>
+      <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- Elasticsearch Java Client (Compatible with Spring Boot 3.1.5) -->
+    <dependency>
+      <artifactId>elasticsearch-java</artifactId>
+      <groupId>co.elastic.clients</groupId>
+      <version>8.8.2</version>  <!-- Ensure version is compatible -->
+    </dependency>
+
+    <!-- Logging Dependencies (Keep if required) -->
+    <dependency>
+      <artifactId>spring-boot-starter-logging</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- Logstash Logback Encoder (Keep if you use Logstash for logging) -->
+    <dependency>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <groupId>net.logstash.logback</groupId>
+      <version>7.4</version>
+    </dependency>
+
+  </dependencies>
+  <description>project for Employee-management-tool</description>
+  <developers>
+    <developer/>
+  </developers>
+  <groupId>com.employee.management</groupId>
+  <licenses>
+    <license/>
+  </licenses>
+  <modelVersion>4.0.0</modelVersion>
+  <name>Employee-management-tool</name>
+  <parent>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <groupId>org.springframework.boot</groupId>
+    <relativePath/>
+    <version>3.1.5</version> <!-- lookup parent from repository -->
+  </parent>
+  <properties>
+    <java.version>17</java.version>
+  </properties>
+  <scm>
+    <connection/>
+    <developerConnection/>
+    <tag/>
     <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
-    <properties>
-        <java.version>17</java.version>
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.xhtmlrenderer</groupId>
-            <artifactId>flying-saucer-pdf</artifactId>
-            <version>9.1.22</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-jose</artifactId>
-            <version>5.8.0</version> <!-- Use the latest version available -->
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-client</artifactId>
-            <version>5.8.0</version> <!-- Use the latest version available -->
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
+  </scm>
+  <url/>
 
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-resource-server</artifactId>
-            <version>5.8.0</version> <!-- Use the latest version available -->
-        </dependency>
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.1.0</version> <!-- or any compatible version -->
-        </dependency>
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
-        </dependency>
-
-
-        <!-- Hibernate as JPA provider (you can use other JPA providers like EclipseLink or OpenJPA) -->
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.cdimascio</groupId>
-            <artifactId>dotenv-java</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version> <!-- Use the appropriate version for your environment -->
-            <scope>provided</scope>
-        </dependency>
-        <!-- MapStruct Core -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version> <!-- Use the latest version -->
-        </dependency>
-
-        <!-- MapStruct Processor (for generating code) -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.5.Final</version>
-            <scope>provided</scope> <!-- Scope 'provided' ensures it's only used at compile-time -->
-        </dependency>
-
-        <!-- Annotation Processor (to enable MapStruct during build) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional> <!-- Optional for better build performance -->
-        </dependency>
-        <!-- Spring Boot Starter for Elasticsearch -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-        </dependency>
-
-        <!-- Elasticsearch Java Client (Compatible with Spring Boot 3.1.5) -->
-        <dependency>
-            <groupId>co.elastic.clients</groupId>
-            <artifactId>elasticsearch-java</artifactId>
-            <version>8.8.2</version>  <!-- Ensure version is compatible -->
-        </dependency>
-
-        <!-- Logging Dependencies (Keep if required) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-        </dependency>
-
-        <!-- Logstash Logback Encoder (Keep if you use Logstash for logging) -->
-        <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>7.4</version>
-        </dependency>
-
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>analyze</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+  <version>0.0.1-SNAPSHOT</version>
 
 </project>

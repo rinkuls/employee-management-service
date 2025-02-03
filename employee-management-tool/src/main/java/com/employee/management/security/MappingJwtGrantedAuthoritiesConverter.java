@@ -14,15 +14,19 @@ import org.springframework.security.oauth2.jwt.Jwt;
 public class MappingJwtGrantedAuthoritiesConverter implements
     Converter<Jwt, Collection<GrantedAuthority>> {
 
-  public static final String ROLES_TAG = "roles";
+
   public static final String CLAIM_NAME = "resource_access";
-  public static final String RESOURCE_NAME = "atest";
-  private static final String AUTHORITY_PREFIX = "SCOPE_";
+  public static final String RESOURCE_NAME = "employeeManagementTool";
+  public static final String ROLES_TAG = "roles";
+  private static final String AUTHORITY_PREFIX = "ROLE_";
 
   @Override
   public Collection<GrantedAuthority> convert(final @NonNull Jwt jwt) {
-    return parseScopesClaim(jwt).stream().map(s -> AUTHORITY_PREFIX + s)
+
+    return parseScopesClaim(jwt).stream().map(role -> AUTHORITY_PREFIX + role)
         .map(SimpleGrantedAuthority::new).collect(Collectors.toCollection(HashSet::new));
+
+
   }
 
   @SuppressWarnings("unchecked")

@@ -1,29 +1,17 @@
 package com.employee.management.security;
 
+import java.util.List;
+import lombok.NonNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConfigurationProperties(prefix = "security")
-public class SecurityConfigProperties {
+@ConfigurationProperties(prefix = "security-config")
+public record SecurityConfigProperties(
+    List<String> allowedPaths,
+    @NonNull CorsProperties cors) {
 
-  private String jwtSecret;
-  private long tokenExpiration;
+  public record CorsProperties(@NonNull List<String> allowedOrigins) {
 
-  // Getters and Setters
-  public String getJwtSecret() {
-    return jwtSecret;
   }
 
-  public void setJwtSecret(String jwtSecret) {
-    this.jwtSecret = jwtSecret;
-  }
 
-  public long getTokenExpiration() {
-    return tokenExpiration;
-  }
-
-  public void setTokenExpiration(long tokenExpiration) {
-    this.tokenExpiration = tokenExpiration;
-  }
 }

@@ -37,9 +37,10 @@ export class WelcomeComponent implements OnInit {
   };
   employeeName: string = '';
 
-private readonly API_URL_REGISTER = `${environment.API_URL_AUTH}/api/v1/auth/register`;
-private readonly API_URL_FETCH = `${environment.API_URL_EMPLOYEE}/api/v1/pdf`;
-private readonly API_URL_ADD_USER = `${environment.API_URL_EMPLOYEE}/api/v1/save/addUserDetails`;
+
+private readonly API_URL_REGISTER = `http://localhost:8099/api/v1/auth/register`;
+private readonly API_URL_FETCH = `http://localhost:8071/api/v1/pdf`;
+private readonly API_URL_ADD_USER = `http://localhost:8071/api/v1/user/addUserDetails`;
 
   constructor(private router: Router, private http: HttpClient) {}
 

@@ -25,24 +25,6 @@ public class SystemUserController {
   private static final Logger logger = LoggerFactory.getLogger(SystemUserController.class);
   private final UserService userService;
 
-  @PostMapping("/fetchRole")
-  public ResponseEntity<UserDetails> fetchUserRole(
-      @RequestHeader("Authorization") String authHeader) {
-    logger.info("Received request to fetch user role.");
-
-    try {
-      if (authHeader != null && authHeader.startsWith("Bearer ")) {
-        String token = authHeader.substring(7);
-        logger.info("Token extracted successfully: {}", token);
-        return ResponseEntity.ok(userService.FetchDetailsOfUser(token));
-      }
-      logger.warn("Authorization header is missing or invalid.");
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    } catch (Exception e) {
-      logger.error("Error fetching user role: {}", e.getMessage(), e);
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-  }
 
   @PostMapping("/addUserDetails")
   public ResponseEntity<String> addUserDetails(
@@ -67,4 +49,26 @@ public class SystemUserController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add user");
     }
   }
+
+
+  @PostMapping("/fetchRole")
+  public ResponseEntity<UserDetails> fetchUserRole(
+      @RequestHeader("Authorization") String authHeader) {
+    logger.info("Received request to fetch user role.");
+
+    try {
+      if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        String token = authHeader.substring(7);
+        logger.info("Token extracted successfully: {}", token);
+        return ResponseEntity.ok(userService.FetchDetailsOfUser(token));
+      }
+
+      logger.warn("Authorization header is missing or invalid.");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    } catch (Exception e) {
+      logger.error("Error fetching user role: {}", e.getMessage(), e);
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+  }
+
 }

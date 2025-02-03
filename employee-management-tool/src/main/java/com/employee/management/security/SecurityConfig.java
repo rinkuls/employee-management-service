@@ -1,57 +1,84 @@
 package com.employee.management.security;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
+@EnableConfigurationProperties(SecurityConfigProperties.class)
 public class SecurityConfig {
 
-  private final JwtValidationFilter jwtValidationFilter;
+  public static final String AUTHORITY_ADMIN = "ROLE_ADMIN";
+  public static final String AUTHORITY_USER = "ROLE_USER";
+  @NonNull
+  private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
+  @NonNull
+  private final CustomAccessDeniedHandler customAccessDeniedHandler;
+  @NonNull
+  private final SecurityConfigProperties securityConfigProperties;
+
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        // Disable CSRF for H2 console
-        .csrf(AbstractHttpConfigurer::disable)
-        // Configure headers to allow frames for H2 console
-        .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
-        // Configure authorization rules
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"),
-                AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
-                AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
-                AntPathRequestMatcher.antMatcher("/swagger-ui.html"),
-                AntPathRequestMatcher.antMatcher("/swagger-resources/**"),
-                AntPathRequestMatcher.antMatcher("/webjars/**"))
-            .permitAll()
-            .anyRequest().authenticated()
-        )
-        .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class);
+  public SecurityFilterChain resourceServerFilterChain(final HttpSecurity http,
+      HandlerMappingIntrospector introspect) throws Exception {
 
+    var antPathRequestMatcher = securityConfigProperties.allowedPaths().stream()
+        .map(AntPathRequestMatcher::new)
+        .toArray(AntPathRequestMatcher[]::new);
+
+    var mvcRequestMatcher = new MvcRequestMatcher(introspect, "/**");
+    mvcRequestMatcher.setMethod(HttpMethod.OPTIONS);
+
+    http.cors(Customizer.withDefaults()) // this is added for connection from UI
+        .headers(headers -> headers.frameOptions(
+            FrameOptionsConfig::sameOrigin)) // this line is added to h2 UI
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(antPathRequestMatcher)
+            .permitAll()
+            .requestMatchers(mvcRequestMatcher).permitAll()
+            .anyRequest().hasAnyAuthority(AUTHORITY_USER, AUTHORITY_ADMIN))
+        .exceptionHandling(
+            httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
+                .accessDeniedHandler(customAccessDeniedHandler)
+                .authenticationEntryPoint(customAuthenticationEntryPointHandler))
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
+            .authenticationEntryPoint(customAuthenticationEntryPointHandler))
+        // @start -sonar - ignore
+        .csrf(AbstractHttpConfigurer::disable)
+        // @end -sonar - ignore
+        .sessionManagement(
+            sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS))
+        .logout(AbstractHttpConfigurer::disable)
+        .formLogin(AbstractHttpConfigurer::disable);
     return http.build();
   }
 
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.addAllowedOrigin("http://localhost:4200"); // Allow Angular app origin
-    configuration.addAllowedMethod("*"); // Allow all HTTP methods
-    configuration.addAllowedHeader("*"); // Allow all headers
-    configuration.setAllowCredentials(true); // Allow credentials like cookies
+  public JwtAuthenticationConverter jwtAuthenticationConverter() {
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration); // Apply CORS rules to all endpoints
-    return source;
+    final MappingJwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new MappingJwtGrantedAuthoritiesConverter();
+    final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+    return jwtAuthenticationConverter;
   }
+
+
 }

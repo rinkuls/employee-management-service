@@ -53,8 +53,8 @@ export class LoginComponent {
       password: this.password,
       empId: this.empId,
     });
-    const API_URL1 = API_URL_AUTH;
-    const API_URL2 = API_URL_EMPLOYEE;
+    const API_URL1 = 'http://localhost:8099';
+    const API_URL2 = 'http://localhost:8071';
     
     this.http.post<{ token: string }>(`${API_URL1}/api/v1/auth/login`, {
       username: this.username,
@@ -67,11 +67,7 @@ export class LoginComponent {
         console.log('Server Response:', response);
         if (response.token) {
           localStorage.setItem('jwtToken', response.token);
-          console.log('JWT Token saved successfully.');
-
-
-
-
+ 
         }
       }),
       switchMap((response) => {
@@ -84,9 +80,9 @@ export class LoginComponent {
         const headers = new HttpHeaders({
           Authorization: `Bearer ${token}`
         });
-
+      
         return this.http.post<{ role: string, empId: number, name: string }>(
-          `${API_URL2}/api/v1/save/fetchRole`,
+          `${API_URL2}/api/v1/user/fetchRole`,
           {}, // Empty body
           { headers }
         );

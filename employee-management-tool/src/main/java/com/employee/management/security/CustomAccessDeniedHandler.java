@@ -15,6 +15,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
   @Override
   public void handle(final HttpServletRequest request, final HttpServletResponse response,
       final AccessDeniedException accessDeniedException) {
+
     log.warn("An unauthorized user (sub: {}) tried to access a protected URL: {}",
         SecurityContextHolder.getContext().getAuthentication().getName(), request.getRequestURI());
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
