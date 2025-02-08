@@ -12,12 +12,12 @@ import org.springframework.data.rest.core.annotation.RestResource;
 public interface UsersRepo extends JpaRepository<Users, Long> {
 
   /**
-   * @param userName
+   * @param username
    * @return
    */
 
   @RestResource(exported = false)
-  Optional<Users> findByUserName(String userName);
+  Optional<Users> findByUsername(String username);
 
   /**
    * @param empId

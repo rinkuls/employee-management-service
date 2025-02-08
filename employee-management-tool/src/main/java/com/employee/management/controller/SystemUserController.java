@@ -26,13 +26,13 @@ public class SystemUserController {
   private final UserService userService;
 
 
-  @PostMapping("/addUserDetails")
-  public ResponseEntity<String> addUserDetails(
+  @PostMapping("/addUser")
+  public ResponseEntity<String> addUser(
       @Valid @RequestBody UserDetails userDetails) {
     logger.info("Received request to add user details.");
 
     try {
-      Optional.ofNullable(userDetails.getName())
+      Optional.of(userDetails.getUsername())
           .filter(StringUtils::hasText)
           .orElseThrow(() -> {
             logger.error("Validation failed: User name is missing.");

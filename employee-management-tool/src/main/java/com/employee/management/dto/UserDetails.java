@@ -17,5 +17,5 @@ public class UserDetails {
   @NonNull
   private Integer empId;
   @NonNull
-  private String name;
+  private String username;
 }

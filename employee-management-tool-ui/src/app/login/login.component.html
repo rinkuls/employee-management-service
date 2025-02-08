@@ -51,18 +51,6 @@
       />
     </div>
 
-    <div class="form-group">
-      <label for="empId">Employee ID</label>
-      <input
-        type="text"
-        id="empId"
-        name="empId"
-        [(ngModel)]="empId"
-        required
-        (input)="validateEmpId()"
-        title="Employee ID should be a long numeric value."
-      />
-    </div>
 
     <button type="submit" class="login-button">Login</button>
   </form>

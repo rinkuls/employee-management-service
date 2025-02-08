@@ -68,11 +68,14 @@ CREATE SEQUENCE IF NOT EXISTS users_seq START WITH 1 INCREMENT BY 1;
 
 -- Create Users table
 CREATE TABLE IF NOT EXISTS users (
-    id BIGINT PRIMARY KEY,
-    user_name VARCHAR(255),
+    id BIGINT PRIMARY KEY ,
+    emp_Id BIGINT,
+    username VARCHAR(255),
+    password VARCHAR(255),
     role VARCHAR(255),
-    emp_id BIGINT
+    is_default_password_changed BOOLEAN DEFAULT FALSE
 );
+
 
 CREATE SEQUENCE IF NOT EXISTS employee_leave_seq START WITH 1 INCREMENT BY 1;
 
@@ -118,17 +121,3 @@ CREATE TABLE IF NOT EXISTS SalaryRelease (
 );
 
 
-
--- Add a trigger for auto-updating updated_at column
---CREATE OR REPLACE FUNCTION update_timestamp()
---RETURNS TRIGGER AS $$
---BEGIN
-  --  NEW.updated_at = CURRENT_TIMESTAMP;
-    --RETURN NEW;
---END;
---$$ LANGUAGE plpgsql;
-
---CREATE TRIGGER update_salary_structure_timestamp
---BEFORE UPDATE ON SalaryStructure
---FOR EACH ROW
---EXECUTE FUNCTION update_timestamp();

@@ -8,6 +8,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,10 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
   private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
+  private static final String DEFAULT_PASSWORD = "password";
   private final UsersRepo usersRepo;
   private final JwtDecoder jwtDecoder;
-
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public UserDetails FetchDetailsOfUser(String token) {
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
       var user = usersRepo.findByEmpId(Long.valueOf(empId));
 
       return new UserDetails(user.get().getRole(),
-          Math.toIntExact(user.get().getEmpId()), user.get().getUserName());
+          Math.toIntExact(user.get().getEmpId()), user.get().getUsername());
 
     } catch (Exception e) {
       logger.error("Error validating token: {}", e.getMessage(), e);
@@ -46,13 +47,13 @@ public class UserServiceImpl implements UserService {
     logger.info("Saving user details to the database: {}", userDetails);
 
     try {
-      var userDetail = Users.builder()
-          .userName(userDetails.getName())
-          .empId(Long.valueOf(userDetails.getEmpId()))
-          .role(userDetails.getRole())
-          .build();
 
-      Users savedUser = usersRepo.save(userDetail);
+      var newUser = Users.builder().role(userDetails.getRole()).username(userDetails.getUsername())
+          .empId(Long.valueOf(userDetails.getEmpId()))
+          .password(passwordEncoder.encode(DEFAULT_PASSWORD)).build();
+
+      newUser.setDefaultPasswordChanged(false);
+      Users savedUser = usersRepo.save(newUser);
       logger.info("User details saved successfully. ID: {}", savedUser.getId());
       return Optional.of(savedUser);
     } catch (Exception e) {

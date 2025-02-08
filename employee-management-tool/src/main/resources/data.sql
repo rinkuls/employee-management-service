@@ -82,8 +82,8 @@ VALUES (NEXTVAL('past_employment_seq'), 'Content Creators Inc.', 'Content Writer
 
 
 -- Insert the default admin user if it does not already exist
-INSERT INTO users (id, emp_id, user_name, role)
-SELECT NEXTVAL('users_seq'), 559260, 'admin', 'ADMIN'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE user_name = 'admin');
+INSERT INTO users (id, emp_Id, username, password, role, is_default_password_changed)
+SELECT NEXTVAL('users_seq'), 559260, 'admin', '$2a$10$OEwN2DIBsxkJqPQpTeGxKOWf7Z6bCAAsQkQ6qc0teIXNmLms6J5.G', 'ADMIN', true
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'admin');
 
 

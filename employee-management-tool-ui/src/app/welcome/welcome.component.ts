@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';  // ✅ Import environment.ts dynamically
 
 
+const API_URL_EMPLOYEE = environment.API_URL_EMPLOYEE;
 
 
 @Component({
@@ -38,11 +39,10 @@ export class WelcomeComponent implements OnInit {
   employeeName: string = '';
 
 
-private readonly API_URL_REGISTER = `http://localhost:8099/api/v1/auth/register`;
-private readonly API_URL_FETCH = `http://localhost:8071/api/v1/pdf`;
-private readonly API_URL_ADD_USER = `http://localhost:8071/api/v1/user/addUserDetails`;
+  private readonly API_URL_REGISTER = `${API_URL_EMPLOYEE}/api/v1/user/addUser`;
 
-  constructor(private router: Router, private http: HttpClient) {}
+
+  constructor(private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.role = localStorage.getItem('role');
@@ -80,7 +80,7 @@ private readonly API_URL_ADD_USER = `http://localhost:8071/api/v1/user/addUserDe
     });
 
     this.http
-      .get(`${this.API_URL_FETCH}/${this.employeeName}`, {
+      .get(`${API_URL_EMPLOYEE}/api/v1/pdf/${this.employeeName}`, {
         headers,
         responseType: 'blob',
       })
@@ -124,6 +124,9 @@ private readonly API_URL_ADD_USER = `http://localhost:8071/api/v1/user/addUserDe
       'Content-Type': 'application/json',
     });
 
+
+
+
     this.http.post(this.API_URL_REGISTER, this.user, { headers, responseType: 'text' }).subscribe({
       next: () => {
         const userDetails = {
@@ -132,16 +135,6 @@ private readonly API_URL_ADD_USER = `http://localhost:8071/api/v1/user/addUserDe
           name: this.user.username,
         };
 
-        // Send user details to another API
-        this.http.post(this.API_URL_ADD_USER, userDetails, { headers, responseType: 'text' }).subscribe({
-          next: () => {
-            console.log('User details sent successfully to addUserDetails API');
-          },
-          error: (error) => {
-            console.error('Failed to send user details to addUserDetails API:', error);
-            alert('User registered, but sending details to the additional service failed.');
-          },
-        });
 
         // Show success message for submit operation
         this.submitSuccessMessage = true;
@@ -170,7 +163,7 @@ private readonly API_URL_ADD_USER = `http://localhost:8071/api/v1/user/addUserDe
 
         setTimeout(() => {
           this.submitErrorMessage = false;
-        },3000);
+        }, 3000);
       },
     });
   }

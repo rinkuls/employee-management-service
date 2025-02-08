@@ -23,10 +23,9 @@ public class Users {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq_gen")
   @SequenceGenerator(name = "users_seq_gen", sequenceName = "users_seq", allocationSize = 1)
   private Long id;
-
-  private String userName;
-
+  private String username;
   private String role;
-
   private Long empId;
+  private String password;
+  private boolean isDefaultPasswordChanged = false;
 }

@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, of, switchMap, tap } from 'rxjs';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';  
+
 
 
 const API_URL_AUTH = environment.API_URL_AUTH;
@@ -53,10 +54,10 @@ export class LoginComponent {
       password: this.password,
       empId: this.empId,
     });
-    const API_URL1 = 'http://localhost:8099';
-    const API_URL2 = 'http://localhost:8071';
-    
-    this.http.post<{ token: string }>(`${API_URL1}/api/v1/auth/login`, {
+
+   
+
+    this.http.post<{ token: string }>(`${API_URL_AUTH}/api/v1/auth/login`, {
       username: this.username,
       password: this.password,
       empId: this.empId
@@ -67,7 +68,7 @@ export class LoginComponent {
         console.log('Server Response:', response);
         if (response.token) {
           localStorage.setItem('jwtToken', response.token);
- 
+
         }
       }),
       switchMap((response) => {
@@ -80,9 +81,9 @@ export class LoginComponent {
         const headers = new HttpHeaders({
           Authorization: `Bearer ${token}`
         });
-      
-        return this.http.post<{ role: string, empId: number, name: string }>(
-          `${API_URL2}/api/v1/user/fetchRole`,
+
+        return this.http.post<{ role: string, empId: number, username: string }>(
+          `${API_URL_EMPLOYEE}/api/v1/user/fetchRole`,
           {}, // Empty body
           { headers }
         );
@@ -95,7 +96,7 @@ export class LoginComponent {
 
         console.log('User Details:', userDetails);
         localStorage.setItem('role', userDetails.role);
-        localStorage.setItem('name', userDetails.name);
+        localStorage.setItem('name', userDetails.username);
 
         if (role === 'ADMIN') {
 
