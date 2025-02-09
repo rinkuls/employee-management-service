@@ -1,5 +1,6 @@
 package com.employee.management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +34,7 @@ public class Kids {
 
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "employee_id")
+  @JsonIgnore
   private Employee employee;
 
 }

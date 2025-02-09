@@ -28,18 +28,18 @@
     <h3>Fetch Employee Details</h3>
     <form (ngSubmit)="fetchEmployeeDetails()" #employeeForm="ngForm">
       <div class="form-group">
-        <label for="employeeName">Employee Name</label>
+        <label for="empId">Employee ID</label>
         <input
-          type="text"
-          id="employeeName"
-          name="employeeName"
-          [(ngModel)]="employeeName"
+          type="number"
+          id="empId"
+          name="empId"
+          [(ngModel)]="empId"
           required
-          pattern="^[A-Za-z ]+$"
-          #employeeNameInput="ngModel"
+          min="1"
+          #empIdInput="ngModel"
         />
-        <div *ngIf="employeeNameInput.invalid && employeeNameInput.touched" class="error">
-          Employee name must contain only letters and spaces.
+        <div *ngIf="empIdInput.invalid && empIdInput.touched" class="error">
+          Employee ID must be a valid number.
         </div>
       </div>
       <button type="submit" class="submit-button" [disabled]="employeeForm.invalid">Submit</button>
@@ -120,4 +120,4 @@
 
 <ng-template #loading>
   <p>Loading...</p>
-</ng-template>
+</ng-template> 

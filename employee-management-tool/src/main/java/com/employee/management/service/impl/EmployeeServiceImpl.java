@@ -21,7 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   public Employee saveOrUpdateEmployee(Employee employee) {
-    return employeeRepo.findByEmpId(employee.getEmpId())
+    return employeeRepo.findByempId(employee.getEmpId())
         .map(existingEmployee -> {
           copyEmployeeDetails(existingEmployee, employee);
           return employeeRepo.save(existingEmployee);

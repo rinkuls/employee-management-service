@@ -25,7 +25,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
   @Transactional
   public ByteArrayOutputStream generatePdfFromHtml(Long empId) {
 
-    return employeeRepo.findByEmpId(empId).map(employee -> {
+    return employeeRepo.findByempId(empId).map(employee -> {
           var data = Map.of("employee", employee);
           var htmlContent = htmlContentService.generateHtml("employee", data);
           return createPdfFromHtml(htmlContent);

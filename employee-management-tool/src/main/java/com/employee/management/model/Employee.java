@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -41,24 +42,31 @@ public class Employee {
   private String natureBehavior;
 
   @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude
   private List<Kids> kids;
 
   @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+  @ToString.Exclude
   private Spouse spouse;
 
   @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+  @ToString.Exclude
   private List<EmployeeLeave> employeeLeave;
 
   @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+  @ToString.Exclude
   private ProfessionalDetails professionalDetails;
 
   @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude
   private List<PastEmployment> pastEmployments;
 
   @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+  @ToString.Exclude
   private SalaryStructure salaryStructure;
 
   @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude
   private List<SalaryRelease> salaryReleases;
 
 

@@ -1,5 +1,6 @@
 package com.employee.management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +34,7 @@ public class PastEmployment {
 
   @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn(name = "employee_id")
+  @JsonIgnore
   private Employee employee;
 
 }

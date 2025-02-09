@@ -36,8 +36,7 @@ export class WelcomeComponent implements OnInit {
     empId: null,
     role: 'USER',
   };
-  employeeName: string = '';
-
+  empId: number | null = null;  // Changed from employeeName to empId
 
   private readonly API_URL_REGISTER = `${API_URL_EMPLOYEE}/api/v1/user/addUser`;
 
@@ -80,7 +79,7 @@ export class WelcomeComponent implements OnInit {
     });
 
     this.http
-      .get(`${API_URL_EMPLOYEE}/api/v1/pdf/${this.employeeName}`, {
+      .get(`${API_URL_EMPLOYEE}/api/v1/pdf/${this.empId}`, {  // Use empId instead of employeeName
         headers,
         responseType: 'blob',
       })
@@ -89,7 +88,7 @@ export class WelcomeComponent implements OnInit {
           const url = window.URL.createObjectURL(response);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `${this.employeeName}.pdf`;
+          a.download = `employee_${this.empId}.pdf`;  // Use empId in filename
           a.click();
 
           // Show success message for fetch operation
@@ -124,9 +123,6 @@ export class WelcomeComponent implements OnInit {
       'Content-Type': 'application/json',
     });
 
-
-
-
     this.http.post(this.API_URL_REGISTER, this.user, { headers, responseType: 'text' }).subscribe({
       next: () => {
         const userDetails = {
@@ -134,7 +130,6 @@ export class WelcomeComponent implements OnInit {
           empId: this.user.empId,
           name: this.user.username,
         };
-
 
         // Show success message for submit operation
         this.submitSuccessMessage = true;

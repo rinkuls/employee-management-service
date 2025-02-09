@@ -19,7 +19,7 @@ public interface EmployeeRepo extends JpaRepository<Employee, Long> {
    * @param empId
    * @return
    */
-  Optional<Employee> findByEmpId(Long empId);
+  Optional<Employee> findByempId(Long empId);
 
 
 }
