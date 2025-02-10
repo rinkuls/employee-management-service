@@ -1,23 +1,21 @@
--- Create user schema
+-- Ensure user_schema and employee_schema exist
 CREATE SCHEMA IF NOT EXISTS user_schema;
-
--- Create employee schema
 CREATE SCHEMA IF NOT EXISTS employee_schema;
 
--- Create sequences in employee_schema
+-- Create Sequences in employee_schema
 CREATE SEQUENCE IF NOT EXISTS employee_schema.employee_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS employee_schema.spouse_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS employee_schema.kids_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS employee_schema.professional_details_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS employee_schema.past_employment_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE IF NOT EXISTS employee_schema.books_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS employee_schema.employee_leave_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS employee_schema.salary_structure_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS employee_schema.salary_release_seq START WITH 1 INCREMENT BY 1;
 
--- Create Users table in user_schema
+-- Create Sequence for user table
 CREATE SEQUENCE IF NOT EXISTS user_schema.users_seq START WITH 1 INCREMENT BY 1;
 
+-- Create Users Table in user_schema
 CREATE TABLE IF NOT EXISTS user_schema.users (
     id BIGINT PRIMARY KEY,
     emp_Id BIGINT,
@@ -27,7 +25,7 @@ CREATE TABLE IF NOT EXISTS user_schema.users (
     is_default_password_changed BOOLEAN DEFAULT FALSE
 );
 
--- Create Employee tables in employee_schema
+-- Create Employee Tables in employee_schema
 CREATE TABLE IF NOT EXISTS employee_schema.employee (
     id BIGINT PRIMARY KEY,
     name VARCHAR(255),
@@ -109,7 +107,7 @@ CREATE TABLE IF NOT EXISTS employee_schema.salary_release (
     id BIGINT PRIMARY KEY,
     employee_id BIGINT NOT NULL,
     salary_structure_id BIGINT NOT NULL,
-    salary_month VARCHAR(7) NOT NULL, -- For tracking monthly salary releases
+    salary_month VARCHAR(7) NOT NULL,
     amount_released DECIMAL(10, 2),
     release_status VARCHAR(10),
     release_date TIMESTAMP NULL,
@@ -119,18 +117,10 @@ CREATE TABLE IF NOT EXISTS employee_schema.salary_release (
     FOREIGN KEY (salary_structure_id) REFERENCES employee_schema.salary_structure(id)
 );
 
-
-
-
 -- Grant Permissions
--- Create read-only user for Auth Service
-
-
 GRANT CONNECT ON DATABASE user_db TO auth_service_user;
 GRANT USAGE ON SCHEMA user_schema TO auth_service_user;
 GRANT SELECT ON ALL TABLES IN SCHEMA user_schema TO auth_service_user;
-
--- Create full-access user for Employee Management Service
 
 GRANT CONNECT ON DATABASE user_db TO employee_service_user;
 GRANT USAGE ON SCHEMA user_schema, employee_schema TO employee_service_user;

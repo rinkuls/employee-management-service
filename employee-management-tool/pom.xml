@@ -196,6 +196,11 @@
       <groupId>net.logstash.logback</groupId>
       <version>7.4</version>
     </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>9.0.0</version> <!-- Ensure to use the latest version -->
+    </dependency>
 
   </dependencies>
   <description>project for Employee-management-tool</description>
