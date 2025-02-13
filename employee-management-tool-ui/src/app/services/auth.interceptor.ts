@@ -35,16 +35,14 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
-
+  
       return this.authService.refreshToken().pipe(
         switchMap((newToken: string) => {
           this.isRefreshing = false;
           this.refreshTokenSubject.next(newToken);
-          return next.handle(
-            req.clone({
-              setHeaders: { Authorization: `Bearer ${newToken}` }
-            })
-          );
+          return next.handle(req.clone({ 
+            setHeaders: { Authorization: `Bearer ${newToken}` } 
+          }));
         }),
         catchError((err) => {
           this.isRefreshing = false;
@@ -53,11 +51,12 @@ export class AuthInterceptor implements HttpInterceptor {
         })
       );
     } else {
+      // Ensure queued requests wait for token refresh
       return this.refreshTokenSubject.pipe(
         filter(token => token !== null),
         take(1),
-        switchMap(token => next.handle(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })))
-      );
+        switchMap(token => next.handle(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }))))
+      ;
     }
   }
-}
+}  

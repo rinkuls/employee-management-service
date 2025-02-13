@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Router } from '@angular/router';
 import { catchError, tap, throwError, BehaviorSubject, switchMap, Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
+
 
 const KEYCLOAK_URL = 'http://localhost:8080';
 const REALM = 'employee-management';
@@ -44,17 +46,18 @@ export class AuthService {
     if (this.isRefreshing) {
       return this.refreshTokenSubject.asObservable().pipe(
         filter(token => token !== null),
+        take(1),
         map(token => token as string)
       );
     }
-  
     this.isRefreshing = true;
-  
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) {
-      this.logout();
-      return throwError(() => new Error('No refresh token available'));
-    }
+  this.refreshTokenSubject.next(null);
+
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) {
+    this.logout();
+    return throwError(() => new Error('No refresh token available'));
+  }
   
     const body = new URLSearchParams();
     body.set('client_id', CLIENT_ID);
@@ -75,6 +78,7 @@ export class AuthService {
       }),
       switchMap(() => this.refreshTokenSubject.asObservable()),
       filter(token => token !== null),
+      take(1),
       map(token => token as string),
       catchError(error => {
         this.isRefreshing = false;
