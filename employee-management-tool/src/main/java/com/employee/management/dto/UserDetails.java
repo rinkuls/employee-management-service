@@ -14,8 +14,7 @@ public class UserDetails {
 
   @NonNull
   private String role;
-  @NonNull
-  private Integer empId;
+
   @NonNull
   private String username;
 }

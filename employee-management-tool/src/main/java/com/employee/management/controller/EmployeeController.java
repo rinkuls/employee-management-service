@@ -32,7 +32,7 @@ public class EmployeeController {
   private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
   private final EmployeeService employeeService;
 
-  @PostMapping
+  @PostMapping("/addEmployee")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Employee saved or updated successfully"),
       @ApiResponse(responseCode = "400", description = "Invalid Employee data"),

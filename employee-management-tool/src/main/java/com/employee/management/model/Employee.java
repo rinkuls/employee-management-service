@@ -41,7 +41,7 @@ public class Employee {
   private String dreamWish;
   private String natureBehavior;
 
-  @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
   @ToString.Exclude
   private List<Kids> kids;
 
@@ -57,7 +57,7 @@ public class Employee {
   @ToString.Exclude
   private ProfessionalDetails professionalDetails;
 
-  @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
   @ToString.Exclude
   private List<PastEmployment> pastEmployments;
 
@@ -65,7 +65,7 @@ public class Employee {
   @ToString.Exclude
   private SalaryStructure salaryStructure;
 
-  @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
   @ToString.Exclude
   private List<SalaryRelease> salaryReleases;
 

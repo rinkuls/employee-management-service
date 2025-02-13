@@ -54,6 +54,10 @@ public class SecurityConfig {
     var mvcRequestMatcher = new MvcRequestMatcher(introspect, "/**");
     mvcRequestMatcher.setMethod(HttpMethod.OPTIONS);
 
+    var mvcRequestMatcherForAddEmployee = new MvcRequestMatcher(introspect,
+        "/api/v1/employee/addEmployee");
+    mvcRequestMatcherForAddEmployee.setMethod(HttpMethod.POST);
+
     http.cors(Customizer.withDefaults()) // this is added for connection from UI
         .headers(headers -> headers.frameOptions(
             FrameOptionsConfig::sameOrigin)) // this line is added to h2 UI
@@ -61,6 +65,7 @@ public class SecurityConfig {
             .requestMatchers(antPathRequestMatcher)
             .permitAll()
             .requestMatchers(mvcRequestMatcher).permitAll()
+            .requestMatchers(mvcRequestMatcherForAddEmployee).hasAuthority(AUTHORITY_ADMIN)
             .anyRequest().hasAnyAuthority(AUTHORITY_USER, AUTHORITY_ADMIN))
         .exceptionHandling(
             httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer

@@ -19,14 +19,32 @@ public class MappingJwtGrantedAuthoritiesConverter implements
   public static final String RESOURCE_NAME = "employeeManagementTool";
   public static final String ROLES_TAG = "roles";
   private static final String AUTHORITY_PREFIX = "ROLE_";
+  private static final String REALM_ACCESS = "realm_access";
+
 
   @Override
   public Collection<GrantedAuthority> convert(final @NonNull Jwt jwt) {
+    Collection<String> roles = extractRolesFromRealmAccess(jwt);
 
-    return parseScopesClaim(jwt).stream().map(role -> AUTHORITY_PREFIX + role)
-        .map(SimpleGrantedAuthority::new).collect(Collectors.toCollection(HashSet::new));
+    return roles.stream()
+        .map(role -> AUTHORITY_PREFIX + role.toUpperCase()) // Convert to uppercase for consistency
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toCollection(HashSet::new));
+  }
 
 
+  @SuppressWarnings("unchecked")
+  private Collection<String> extractRolesFromRealmAccess(final Jwt jwt) {
+    Collection<String> mappedAuthorities = new ArrayList<>();
+
+    if (jwt.hasClaim(REALM_ACCESS)) {
+      Map<String, Object> realmAccess = jwt.getClaimAsMap(REALM_ACCESS);
+      if (realmAccess.containsKey(ROLES_TAG)) {
+        mappedAuthorities.addAll((Collection<String>) realmAccess.get(ROLES_TAG));
+      }
+    }
+
+    return mappedAuthorities;
   }
 
   @SuppressWarnings("unchecked")

@@ -1,8 +1,8 @@
 {
-  "name": "testuser",
-  "empId": 12048,
-  "email": "john.doe@example.com",
-  "phoneNumber": "+1234567890",
+  "name": "Alex",
+  "empId": 5000,
+  "email": "Alex.doe@example.com",
+  "phoneNumber": "7838399946",
   "address": "1234 Elm St, Springfield, IL",
   "married": true,
   "extraMartialAffair": false,
@@ -12,39 +12,39 @@
   "kids": [
     {
       "name": "Alice Doe",
-      "age": 5,
+      "age": 15,
       "gender": "Female",
       "profession": "Student"
     },
     {
       "name": "Bob Doe",
-      "age": 3,
+      "age": 13,
       "gender": "Male",
       "profession": "Student"
     }
   ],
   "spouse": {
     "name": "Jane Doe",
-    "age": 30,
+    "age": 31,
     "gender": "Female",
     "currentOccupation": "Doctor"
   },
   "professionalDetails": {
     "currentCompany": "TechCorp Inc.",
     "currentDesignation": "Senior Developer",
-    "currentSalary": 95000.00,
+    "currentSalary": 75000.00,
     "currentLocation": "New York"
   },
   "pastEmployments": [
     {
       "companyName": "OldTech Solutions",
       "designation": "Junior Developer",
-      "salary": 55000.00
+      "salary": 65000.00
     },
     {
       "companyName": "Creative Works",
       "designation": "Intern",
-      "salary": 30000.00
+      "salary":4000.00
     }
   ]
 }

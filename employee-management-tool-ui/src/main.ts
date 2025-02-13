@@ -1,20 +1,23 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import { importProvidersFrom } from '@angular/core';
+import { importProvidersFrom, Provider } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { appRoutes } from './app/app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './app/services/auth.interceptor';
 
-// Configure the application
-export const appConfig = {
-  providers: [
-    importProvidersFrom(
-      RouterModule.forRoot(appRoutes, { useHash: false }) // Hashless routing for modern SPAs
-    ),
-    provideHttpClient() // Enable HTTP client
-  ],
+// Define interceptor provider
+const httpInterceptorProvider: Provider = {
+  provide: HTTP_INTERCEPTORS,
+  useClass: AuthInterceptor,
+  multi: true // Allow multiple interceptors if needed
 };
 
-// Bootstrap the application
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+// Bootstrap the application with required providers
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(RouterModule.forRoot(appRoutes, { useHash: false })), // Properly wrap RouterModule
+    provideHttpClient(withInterceptorsFromDi()), // Enable HTTP client with DI Interceptors
+    httpInterceptorProvider // Register AuthInterceptor correctly
+  ]
+}).catch(err => console.error(err));

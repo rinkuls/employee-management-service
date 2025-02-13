@@ -1,14 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-import { environment } from '../../environments/environment';  // ✅ Import environment.ts dynamically
-
-
+import { environment } from '../../environments/environment';
+import { AuthService } from '../services/auth.service';
 const API_URL_EMPLOYEE = environment.API_URL_EMPLOYEE;
-
 
 @Component({
   selector: 'app-welcome',
@@ -23,34 +20,67 @@ export class WelcomeComponent implements OnInit {
   showForm: boolean = false;
   showEmployeeSearch: boolean = false;
 
-  // Separate success and error flags
   fetchSuccessMessage: boolean = false;
   fetchErrorMessage: boolean = false;
   submitSuccessMessage: boolean = false;
   submitErrorMessage: boolean = false;
 
-  private messageTimeout: any; // Handle timeout for messages
+  private messageTimeout: any;
 
   user = {
     username: '',
     empId: null,
     role: 'USER',
   };
-  empId: number | null = null;  // Changed from employeeName to empId
+  empId: number | null = null;
+  employee = {
+    name: '',
+    empId: null,
+    email: '',
+    phoneNumber: '',
+    address: '',
+    married: false,
+    extraMartialAffair: false,
+    dreamWish: '',
+    natureBehavior: '',
+    profilePicture: null,
+    kids: [] as { name: string; age: number | null; gender: string; profession: string }[], 
+    spouse: { name: '', age: null, gender: '', currentOccupation: '' },
+    professionalDetails: {
+      currentCompany: '',
+      currentDesignation: '',
+      currentSalary: null,
+      currentLocation: '',
+    },
+    pastEmployments: [] as { companyName: string; designation: string; salary: number | null }[],
+  };
+     
+  hasKids: boolean = false;
 
-  private readonly API_URL_REGISTER = `${API_URL_EMPLOYEE}/api/v1/user/addUser`;
+  private readonly API_URL_REGISTER = `${API_URL_EMPLOYEE}/api/v1/employee/addEmployee`;
 
-
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(
+    private router: Router, 
+    private http: HttpClient, 
+    private authService: AuthService, 
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.role = localStorage.getItem('role');
-    this.name = localStorage.getItem('name');
+    console.log('Fetching stored values from localStorage...');
+    console.log('Stored userRole:', localStorage.getItem('userRole'));
+    console.log('Stored userName:', localStorage.getItem('userName'));
+
+    this.role = localStorage.getItem('userRole') || '';
+    this.name = localStorage.getItem('userName') || '';
+
+    // Force UI update to reflect values
+    this.cdr.detectChanges();
   }
 
   logout(): void {
-    localStorage.removeItem('role');
-    localStorage.removeItem('name');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
     localStorage.removeItem('jwtToken');
     this.router.navigate(['/login']);
   }
@@ -61,25 +91,13 @@ export class WelcomeComponent implements OnInit {
 
   showEmployeeSearchForm() {
     this.showEmployeeSearch = !this.showEmployeeSearch;
-
-    // Reset success/error messages for employee search
     this.fetchSuccessMessage = false;
     this.fetchErrorMessage = false;
   }
 
   fetchEmployeeDetails() {
-    const jwtToken = localStorage.getItem('jwtToken');
-    if (!jwtToken) {
-      alert('Error: Missing authentication token!');
-      return;
-    }
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${jwtToken}`,
-    });
-
-    this.http
-      .get(`${API_URL_EMPLOYEE}/api/v1/pdf/${this.empId}`, {  // Use empId instead of employeeName
+    this.authService.getAuthHeaders().subscribe(headers => {
+      this.http.get(`${API_URL_EMPLOYEE}/api/v1/pdf/${this.empId}`, {
         headers,
         responseType: 'blob',
       })
@@ -88,19 +106,22 @@ export class WelcomeComponent implements OnInit {
           const url = window.URL.createObjectURL(response);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `employee_${this.empId}.pdf`;  // Use empId in filename
+          a.download = `employee_${this.empId}.pdf`;
           a.click();
 
-          // Show success message for fetch operation
           this.fetchSuccessMessage = true;
           this.fetchErrorMessage = false;
 
           setTimeout(() => {
-            this.fetchSuccessMessage = false;
-          }, 3000);
+            this.fetchSuccessMessage = true;
+            this.showEmployeeSearch = false; // Hide form after success
+            this.empId = null; // Reset input field
+            setTimeout(() => {
+              this.fetchSuccessMessage = false; // Hide success message after a delay
+            }, 3000);
+          }, 1000);
         },
         error: () => {
-          // Show error message for fetch operation
           this.fetchSuccessMessage = false;
           this.fetchErrorMessage = true;
 
@@ -109,66 +130,92 @@ export class WelcomeComponent implements OnInit {
           }, 3000);
         },
       });
+    });
   }
 
   onSubmit() {
-    const jwtToken = localStorage.getItem('jwtToken');
-    if (!jwtToken) {
-      alert('Error: Missing authentication token!');
-      return;
-    }
+    this.authService.getAuthHeaders().subscribe(headers => {
+      this.http.post(`${API_URL_EMPLOYEE}/api/v1/employee/addEmployee`, this.employee, { headers, responseType: 'text' })
+      .subscribe({
+        next: () => {
+          this.submitSuccessMessage = true;
+          this.showForm = false;
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${jwtToken}`,
-      'Content-Type': 'application/json',
-    });
-
-    this.http.post(this.API_URL_REGISTER, this.user, { headers, responseType: 'text' }).subscribe({
-      next: () => {
-        const userDetails = {
-          role: this.user.role,
-          empId: this.user.empId,
-          name: this.user.username,
-        };
-
-        // Show success message for submit operation
-        this.submitSuccessMessage = true;
-        this.showForm = false;
-
-        clearTimeout(this.messageTimeout);
-        this.messageTimeout = setTimeout(() => {
+          setTimeout(() => {
+            this.submitSuccessMessage = false;
+            this.resetForm();
+          }, 3000);
+        },
+        error: () => {
           this.submitSuccessMessage = false;
-          this.resetForm();
-        }, 10000);
-      },
-      error: (error) => {
-        console.error('Error:', error);
+          this.submitErrorMessage = true;
 
-        // Show error message for submit operation
-        this.submitSuccessMessage = false;
-        this.submitErrorMessage = true;
-
-        if (error.status === 401) {
-          alert('Unauthorized! Please log in again.');
-        } else if (error.status === 400) {
-          alert('Bad Request: Invalid data provided.');
-        } else {
-          alert('Failed to register user. Please try again.');
-        }
-
-        setTimeout(() => {
-          this.submitErrorMessage = false;
-        }, 3000);
-      },
+          setTimeout(() => {
+            this.submitErrorMessage = false;
+          }, 3000);
+        },
+      });
     });
   }
 
   resetForm() {
-    this.user = {
-      username: '',
+    this.employee = {
+      name: '',
       empId: null,
-      role: 'USER',
+      email: '',
+      phoneNumber: '',
+      address: '',
+      married: false,
+      extraMartialAffair: false,
+      dreamWish: '',
+      natureBehavior: '',
+      profilePicture: null,
+      kids: [],
+      spouse: { name: '', age: null, gender: '', currentOccupation: '' },
+      professionalDetails: {
+        currentCompany: '',
+        currentDesignation: '',
+        currentSalary: null,
+        currentLocation: '',
+      },
+      pastEmployments: []
     };
     this.showForm = false;
   }
+  
+  toggleSpouseDetails(married: boolean) {
+    if (!married) {
+      this.employee.spouse = { name: '', age: null, gender: '', currentOccupation: '' };
+    }
+  }
+  
+
+      // Toggle Kids Section
+  toggleKids(hasKids: boolean) {
+    this.hasKids = hasKids;
+    if (!hasKids) {
+      this.employee.kids = [];
+    }
+  }
+
+  addKid() {
+    this.employee.kids.push({ name: '', age: null, gender: '', profession: '' });
+  }
+  
+  
+  
+    // Remove a Kid Entry
+    removeKid(index: number) {
+      this.employee.kids.splice(index, 1);
+    }
+
+    addPastEmployment() {
+      this.employee.pastEmployments.push({ companyName: '', designation: '', salary: null });
+    }
+    
+    
+// Remove a Past Employment Entry
+removePastEmployment(index: number) {
+  this.employee.pastEmployments.splice(index, 1);
+}
 }
