@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class CustomAuthenticationEntryPointHandler implements AuthenticationEntryPoint {
+public class ToolUserAuthenticationEntryPointHandler implements AuthenticationEntryPoint {
 
   private static final int STATUS_UNAUTHORIZED = HttpServletResponse.SC_UNAUTHORIZED;
   private static final String CONTENT_TYPE_JSON = "application/json";

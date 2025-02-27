@@ -11,12 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-public class MappingJwtGrantedAuthoritiesConverter implements
+public class JwtAndGrantedRolesConverter implements
     Converter<Jwt, Collection<GrantedAuthority>> {
 
-
-  public static final String CLAIM_NAME = "resource_access";
-  public static final String RESOURCE_NAME = "employeeManagementTool";
   public static final String ROLES_TAG = "roles";
   private static final String AUTHORITY_PREFIX = "ROLE_";
   private static final String REALM_ACCESS = "realm_access";
@@ -44,22 +41,6 @@ public class MappingJwtGrantedAuthoritiesConverter implements
       }
     }
 
-    return mappedAuthorities;
-  }
-
-  @SuppressWarnings("unchecked")
-  private Collection<String> parseScopesClaim(final Jwt jwt) {
-    final Collection<String> mappedAuthorities = new ArrayList<>();
-    if (jwt.hasClaim(CLAIM_NAME) && jwt.getClaim(CLAIM_NAME) != null) {
-      final var resourceAccess = jwt.getClaimAsMap(CLAIM_NAME);
-      final var resource = (Map<String, Object>) resourceAccess.get(RESOURCE_NAME);
-      if (resource != null && resource.containsKey(ROLES_TAG)) {
-        final var roles = (Collection<String>) resource.get(ROLES_TAG);
-        if (roles != null) {
-          mappedAuthorities.addAll(roles);
-        }
-      }
-    }
     return mappedAuthorities;
   }
 

@@ -31,9 +31,9 @@ public class SecurityConfig {
   public static final String AUTHORITY_ADMIN = "ROLE_ADMIN";
   public static final String AUTHORITY_USER = "ROLE_USER";
   @NonNull
-  private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
+  private final ToolUserAuthenticationEntryPointHandler toolUserAuthenticationEntryPointHandler;
   @NonNull
-  private final CustomAccessDeniedHandler customAccessDeniedHandler;
+  private final ToolUserAccessDeniedHandler toolUserAccessDeniedHandler;
   @NonNull
   private final SecurityConfigProperties securityConfigProperties;
 
@@ -47,12 +47,17 @@ public class SecurityConfig {
   public SecurityFilterChain resourceServerFilterChain(final HttpSecurity http,
       HandlerMappingIntrospector introspect) throws Exception {
 
+    // ant matcher urls
     var antPathRequestMatcher = securityConfigProperties.allowedPaths().stream()
         .map(AntPathRequestMatcher::new)
         .toArray(AntPathRequestMatcher[]::new);
 
+    // mvc url
+
     var mvcRequestMatcher = new MvcRequestMatcher(introspect, "/**");
     mvcRequestMatcher.setMethod(HttpMethod.OPTIONS);
+
+    // restricted URL
 
     var mvcRequestMatcherForAddEmployee = new MvcRequestMatcher(introspect,
         "/api/v1/employee/addEmployee");
@@ -69,27 +74,34 @@ public class SecurityConfig {
             .anyRequest().hasAnyAuthority(AUTHORITY_USER, AUTHORITY_ADMIN))
         .exceptionHandling(
             httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
-                .accessDeniedHandler(customAccessDeniedHandler)
-                .authenticationEntryPoint(customAuthenticationEntryPointHandler))
+                .accessDeniedHandler(toolUserAccessDeniedHandler)
+                .authenticationEntryPoint(toolUserAuthenticationEntryPointHandler))
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
-            .authenticationEntryPoint(customAuthenticationEntryPointHandler))
-        // @start -sonar - ignore
+            .authenticationEntryPoint(toolUserAuthenticationEntryPointHandler))
+        // sonar can cause issue
         .csrf(AbstractHttpConfigurer::disable)
-        // @end -sonar - ignore
+        // sonar can cause issue
         .sessionManagement(
             sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS))
-        .logout(AbstractHttpConfigurer::disable)
-        .formLogin(AbstractHttpConfigurer::disable);
+        .logout(AbstractHttpConfigurer::disable) // default spring logout feature
+        .formLogin(AbstractHttpConfigurer::disable);// default spring login feature
     return http.build();
   }
+
+
+  //.oauth2ResourceServer(oauth2 -> oauth2
+     // .jwt(jwtConfigurer -> jwtConfigurer
+    //  .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+     // .authenticationEntryPoint(customAuthenticationEntryPointHandler)
+//);
 
   @Bean
   public JwtAuthenticationConverter jwtAuthenticationConverter() {
 
-    final MappingJwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new MappingJwtGrantedAuthoritiesConverter();
+    final JwtAndGrantedRolesConverter rolesConverter = new JwtAndGrantedRolesConverter();
     final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(rolesConverter);
     return jwtAuthenticationConverter;
   }
 

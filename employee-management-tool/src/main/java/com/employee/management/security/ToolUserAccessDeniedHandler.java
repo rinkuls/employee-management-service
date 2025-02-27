@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+public class ToolUserAccessDeniedHandler implements AccessDeniedHandler {
 
   private static final int STATUS_FORBIDDEN = HttpServletResponse.SC_FORBIDDEN;
   private static final String CONTENT_TYPE_JSON = "application/json";
