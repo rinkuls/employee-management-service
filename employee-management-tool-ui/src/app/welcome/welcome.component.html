@@ -1,6 +1,6 @@
 <div class="header">
   <div class="welcome-message">
-    <h1>Welcome, {{ name }}!</h1>
+    <h1>Welcome {{ name | uppercase }}, You Are  {{ role }} !</h1>
   </div>
   <div class="logout">
     <button (click)="logout()">Logout</button>
