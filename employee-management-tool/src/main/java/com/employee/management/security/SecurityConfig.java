@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,8 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
@@ -37,11 +34,6 @@ public class SecurityConfig {
   @NonNull
   private final SecurityConfigProperties securityConfigProperties;
 
-  @Bean
-  @Primary
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
 
   @Bean
   public SecurityFilterChain resourceServerFilterChain(final HttpSecurity http,
@@ -89,12 +81,6 @@ public class SecurityConfig {
     return http.build();
   }
 
-
-  //.oauth2ResourceServer(oauth2 -> oauth2
-     // .jwt(jwtConfigurer -> jwtConfigurer
-    //  .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-     // .authenticationEntryPoint(customAuthenticationEntryPointHandler)
-//);
 
   @Bean
   public JwtAuthenticationConverter jwtAuthenticationConverter() {
